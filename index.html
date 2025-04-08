@@ -3,37 +3,196 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SIU Library System</title>
+  <title>SIU Library Management System - Login</title>
   <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 <body>
-  <div class="container">
-    <header>
-      <h1>SIU Library Management System</h1>
-    </header>
-    
-    <nav id="tableTabs">
-      <!-- Tabs will be dynamically generated -->
-    </nav>
-    
-    <div id="tableContent">
-      <!-- Content will be dynamically generated -->
+  <nav class="navbar">
+    <div class="nav-brand">
+      <img src="images/siu_logo.png" alt="SIU Logo" class="navbar-logo">
+      <span>SIU Library System</span>
+    </div>
+    <!-- Nav links will be populated by JS and visibility controlled by JS -->
+    <div class="nav-links" id="mainNavLinks">
+      <!-- Links will be populated by JS based on role -->
+    </div>
+  </nav>
+
+  <!-- Login Section -->
+  <section id="loginSection" class="section login-container">
+     <!-- Initially hidden/shown by JS -->
+    <div class="login-box">
+      <h2>Admin Login</h2>
+      <form id="loginForm" onsubmit="handleLogin(event)">
+        <div class="input-group">
+          <label for="username">Username:</label>
+          <input type="text" id="username" name="username" required>
+        </div>
+        <div class="input-group">
+          <label for="password">Password:</label>
+          <input type="password" id="password" name="password" required>
+        </div>
+        <button type="submit" class="login-btn">Login</button>
+        <!-- Visibility controlled by JS -->
+        <p id="loginError" class="error-message">Invalid credentials</p>
+      </form>
+    </div>
+  </section>
+
+  <!-- Main Content (Visibility controlled by JS) -->
+  <main id="mainContent">
+
+    <!-- == Admin View Sections (Visibility controlled by JS) == -->
+    <div id="adminView">
+        <!-- Admin Home Section -->
+        <section id="homeSection" class="section">
+          <div class="hero">
+            <div class="hero-content">
+              <h1>Welcome, Admin!</h1>
+              <p>Manage your library resources efficiently.</p>
+              <div class="cta-buttons">
+                <button class="cta-btn primary" onclick="navigateToSection('tablesSection')">Manage Tables</button>
+                <button class="cta-btn secondary" onclick="navigateToSection('querySection')">Run Queries</button>
+              </div>
+            </div>
+          </div>
+          
+          <div class="features-container">
+            <h2>Key Features</h2>
+            <div class="features">
+              <div class="feature-card">
+                <span class="material-icons">table_view</span>
+                <h3>Database Management</h3>
+                <p>View, add, edit, and delete records across 17 different tables.</p>
+              </div>
+              <div class="feature-card">
+                <span class="material-icons">query_stats</span>
+                <h3>Powerful Queries</h3>
+                <p>Execute predefined SQL queries to gain insights from your data.</p>
+              </div>
+              <div class="feature-card">
+                <span class="material-icons">devices</span>
+                <h3>Responsive UI</h3>
+                <p>Access and manage the system smoothly on any device.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Tables Section -->
+        <section id="tablesSection" class="section">
+          <div class="section-header">
+            <h2>Database Tables</h2>
+            <button class="refresh-btn" onclick="loadTables()">
+              <span class="material-icons">refresh</span>
+            </button>
+          </div>
+          <div class="table-grid" id="tableGrid"></div>
+        </section>
+
+        <!-- Query Section -->
+        <section id="querySection" class="section">
+          <div class="query-interface">
+            <div class="query-selection">
+              <label for="querySelector">Select a Query:</label>
+              <select id="querySelector" class="query-dropdown" aria-label="Available database queries" aria-describedby="queryDescription">
+                <option value="" disabled selected>Choose a query...</option>
+                <option value="1">1. Libraries in Pune</option>
+                <option value="2">2. CS Department Institute</option>
+                <option value="3">3. Books Price Range (800-12000)</option>
+                <option value="4">4. Employees Salary ≤ 50000</option>
+                <option value="5">5. Sellers Name Ending with "ta"</option>
+                <option value="6">6. Libraries with Missing Area</option>
+                <option value="7">7. Staff Not Starting with "A"</option>
+                <option value="8">8. Libraries in Bangalore</option>
+                <option value="9">9. Civil Department Students</option>
+                <option value="10">10. Delete 2016 Purchases</option>
+              </select>
+              <button id="executeQueryBtn" onclick="executeSelectedQuery()" disabled aria-label="Execute selected query">Execute Query</button>
+            </div>
+            <div id="queryDescription" class="query-description" aria-live="polite"></div>
+            <div id="queryResult" class="query-result" aria-live="polite"></div>
+          </div>
+        </section>
+    </div>
+    <!-- == End Admin View Sections == -->
+
+    <!-- == User View Sections == -->
+     <div id="userView" style="display: none;">
+        <!-- User Welcome Section -->
+        <section id="userWelcomeSection" class="section hero">
+             <!-- Apply general hero styles -->
+            <div class="hero-content">
+                <h1>Welcome, Library User!</h1>
+                <p>Explore our collection, find your next read, or check available queries.</p>
+                <div class="cta-buttons">
+                    <button class="cta-btn primary" onclick="navigateToSection('userHomeSection')">Browse Books</button>
+                    <button class="cta-btn secondary" onclick="navigateToSection('userQuerySection')">Run Queries</button>
+                </div>
+             </div>
+        </section>
+
+        <!-- User Book Browsing Section -->
+        <section id="userHomeSection" class="section">
+            <div class="section-header">
+                <h2>Browse Books</h2>
+                 <input type="text" id="bookSearchInput" placeholder="Search by title, author, category..." onkeyup="filterBooks()">
+            </div>
+            <div id="bookGrid" class="book-grid">
+                <!-- Book cards will be loaded here -->
+            </div>
+        </section>
+     </div>
+    <!-- == End User View Sections == -->
+
+  </main>
+
+  <!-- Modal for viewing and editing table data -->
+  <div id="tableModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modalTitle"></h2>
+        <div class="modal-actions">
+          <button class="add-record-btn" onclick="showAddRecordForm()">
+            <span class="material-icons">add</span> Add Record
+          </button>
+          <span class="close">&times;</span>
+        </div>
+      </div>
+      <div id="modalContent"></div>
     </div>
   </div>
 
-  <!-- Single dynamic modal for all tables -->
-  <div class="modal" id="dataModal">
+  <!-- Add Record Form Modal -->
+  <div id="addRecordModal" class="modal">
     <div class="modal-content">
-      <span class="close">&times;</span>
-      <h2 id="modalTitle">Add New Record</h2>
-      <form id="dataForm">
-        <input type="hidden" id="recordId">
-        <div id="formFields">
-          <!-- Form fields will be dynamically generated -->
+      <div class="modal-header">
+        <h2>Add New Record</h2>
+        <span class="close" onclick="closeAddRecordModal()">&times;</span>
+      </div>
+      <form id="addRecordForm" onsubmit="handleAddRecord(event)">
+        <div id="formFields"></div>
+        <div class="form-actions">
+          <button type="submit" class="submit-btn">Add Record</button>
+          <button type="button" class="cancel-btn" onclick="closeAddRecordModal()">Cancel</button>
         </div>
-        <button type="submit">Save</button>
       </form>
     </div>
+  </div>
+
+  <!-- Book Details Modal -->
+  <div id="bookDetailsModal" class="modal">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h2 id="bookDetailsTitle">Book Details</h2>
+              <span class="close" onclick="closeModal('bookDetailsModal')">&times;</span>
+          </div>
+          <div id="bookDetailsContent" class="book-details-content">
+              <!-- Details will be loaded here -->
+              <p>Loading details...</p>
+          </div>
+      </div>
   </div>
 
   <script src="script.js"></script>
