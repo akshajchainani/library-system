@@ -24,32 +24,27 @@ nav {
   background: #e8491d;
   padding: 10px 0;
   border-radius: 5px 5px 0 0;
+  overflow-x: auto;
+  white-space: nowrap;
 }
 
 .tab-btn {
-  padding: 10px 20px;
+  padding: 10px 15px;
   background: none;
   border: none;
   color: white;
   cursor: pointer;
   font-weight: bold;
+  font-size: 14px;
+  margin: 0 2px;
 }
 
 .tab-btn.active {
   background: #35424a;
 }
 
-.tab-content {
-  display: none;
-  padding: 20px;
-  background: white;
-  margin-bottom: 20px;
-  border-radius: 0 0 5px 5px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
-
-.tab-content.active {
-  display: block;
+.table-container {
+  overflow-x: auto;
 }
 
 table {
@@ -88,17 +83,6 @@ button {
 
 button:hover {
   background: #e8491d;
-}
-
-.search-box {
-  margin: 20px 0;
-  display: flex;
-  gap: 10px;
-}
-
-.search-box input {
-  padding: 8px;
-  width: 300px;
 }
 
 .modal {

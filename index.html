@@ -12,110 +12,25 @@
       <h1>SIU Library Management System</h1>
     </header>
     
-    <nav>
-      <button class="tab-btn active" data-tab="books">Books</button>
-      <button class="tab-btn" data-tab="members">Members</button>
-      <button class="tab-btn" data-tab="transactions">Transactions</button>
+    <nav id="tableTabs">
+      <!-- Tabs will be dynamically generated -->
     </nav>
     
-    <div class="tab-content active" id="books">
-      <h2>Book Management</h2>
-      <div class="search-box">
-        <input type="text" id="bookSearch" placeholder="Search books...">
-        <button id="searchBtn">Search</button>
-      </div>
-      <button id="addBookBtn">Add New Book</button>
-      <table id="booksTable">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Title</th>
-            <th>Price</th>
-            <th>Library</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <!-- Books will be loaded here -->
-        </tbody>
-      </table>
-    </div>
-    
-    <div class="tab-content" id="members">
-      <h2>Member Management</h2>
-      <button id="addMemberBtn">Add New Member</button>
-      <table id="membersTable">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Type</th>
-            <th>Department</th>
-            <th>Library</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <!-- Members will be loaded here -->
-        </tbody>
-      </table>
-    </div>
-    
-    <div class="tab-content" id="transactions">
-      <h2>Transactions</h2>
-      <p>Transaction management coming soon...</p>
+    <div id="tableContent">
+      <!-- Content will be dynamically generated -->
     </div>
   </div>
 
-  <!-- Book Modal -->
-  <div class="modal" id="bookModal">
+  <!-- Single dynamic modal for all tables -->
+  <div class="modal" id="dataModal">
     <div class="modal-content">
       <span class="close">&times;</span>
-      <h2 id="bookModalTitle">Add New Book</h2>
-      <form id="bookForm">
-        <input type="hidden" id="bookId">
-        <label for="title">Title:</label>
-        <input type="text" id="title" required>
-        
-        <label for="price">Price:</label>
-        <input type="number" id="price" step="0.01" required>
-        
-        <label for="library">Library:</label>
-        <select id="library" required>
-          <option value="">Select Library</option>
-        </select>
-        
-        <button type="submit">Save</button>
-      </form>
-    </div>
-  </div>
-
-  <!-- Member Modal -->
-  <div class="modal" id="memberModal">
-    <div class="modal-content">
-      <span class="close">&times;</span>
-      <h2 id="memberModalTitle">Add New Member</h2>
-      <form id="memberForm">
-        <input type="hidden" id="memberId">
-        <label for="memberName">Name:</label>
-        <input type="text" id="memberName" required>
-        
-        <label for="memberEmail">Email:</label>
-        <input type="email" id="memberEmail">
-        
-        <label for="memberType">Type:</label>
-        <select id="memberType" required>
-          <option value="">Select Type</option>
-          <option value="Student">Student</option>
-          <option value="Staff">Staff</option>
-        </select>
-        
-        <label for="memberDept">Department:</label>
-        <select id="memberDept" required>
-          <option value="">Select Department</option>
-        </select>
-        
+      <h2 id="modalTitle">Add New Record</h2>
+      <form id="dataForm">
+        <input type="hidden" id="recordId">
+        <div id="formFields">
+          <!-- Form fields will be dynamically generated -->
+        </div>
         <button type="submit">Save</button>
       </form>
     </div>

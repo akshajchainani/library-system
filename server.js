@@ -1,40 +1,65 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
-const db = require('./db'); // Add this line
+const db = require('./db');
 
 const app = express();
 
 // Middleware
 app.use(cors());
 app.use(express.json());
-app.use(express.static(path.join(__dirname))); 
+app.use(express.static(path.join(__dirname)));
 
-app.get('/api/libraries', async (req, res) => {
+// Dynamic table API endpoint
+app.get('/api/tables/:tableName', async (req, res) => {
   try {
-    const [libraries] = await db.query('SELECT Lid, Lname FROM Ilibrary');
-    res.json(libraries);
+    const { tableName } = req.params;
+    const [rows] = await db.query(`SELECT * FROM ${tableName}`);
+    res.json(rows);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Failed to fetch libraries' });
+    res.status(500).json({ error: `Failed to fetch data from ${req.params.tableName}` });
   }
 });
 
-app.get('/api/departments', async (req, res) => {
+// Dynamic table by ID endpoint
+app.get('/api/tables/:tableName/:id', async (req, res) => {
   try {
-    const [departments] = await db.query('SELECT Deptid, Deptname FROM DEPARTMENT');
-    res.json(departments);
+    const { tableName, id } = req.params;
+    const [rows] = await db.query(`SELECT * FROM ${tableName} WHERE ${getPrimaryKey(tableName)} = ?`, [id]);
+
+    if (rows.length === 0) {
+      return res.status(404).json({ error: 'Record not found' });
+    }
+
+    res.json(rows[0]);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Failed to fetch departments' });
+    res.status(500).json({ error: `Failed to fetch record from ${tableName}` });
   }
 });
 
-// API Routes
-const booksRouter = require('./api/books.js');
-const membersRouter = require('./api/members.js');
-app.use('/api/books', booksRouter);
-app.use('/api/members', membersRouter);
+// Helper function to determine primary key
+function getPrimaryKey(tableName) {
+  switch(tableName) {
+    case 'STUDENT': return 'Stid';
+    case 'STAFF': return 'Staid';
+    case 'BOOKS': return 'Bid';
+    case 'DEPARTMENT': return 'Deptid';
+    case 'Ilibrary': return 'Lid';
+    case 'AUTHOR': return 'Aid';
+    case 'PUBLISHER': return 'Pid';
+    case 'WRITES': return 'Wid';
+    case 'SELLER': return 'Sid';
+    case 'PURCHASE': return 'Purchaseid';
+    case 'AUTHOR_SPECIALIZATION': return 'ASid';
+    case 'ISSUE': return 'Issueid';
+    case 'SELLS': return 'Sellsid';
+    case 'EMPLOYEE': return 'Eid';
+    // Add other tables as needed
+    default: return `${tableName.toLowerCase()}_id`; // Fallback
+  }
+}
 
 // Serve frontend
 app.get('*', (req, res) => {
